@@ -1,0 +1,1 @@
+El archivo 3 desarrollado en VSCode esta en HTML5 y es una simulacion de un movimiento armonico simple para grrado decimo y tambien se encuentran identificadores de autos como el colegio (Integrado Irra) y el nombre del docente que lo desarrolló (Omar Acosta Henao)
