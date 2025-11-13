@@ -1,1 +1,1 @@
-El archivo 3 desarrollado en VSCode esta en HTML5 y es una simulacion de un movimiento armonico simple para grrado décimo y tambien se encuentran identificadores de autor como el colegio (Integrado Irra) y el nombre del docente que lo desarrolló (Omar Acosta Henao)
+El archivo index.html desarrollado en VSCode esta en HTML5 y es una simulacion de un movimiento armonico simple para grrado décimo y tambien se encuentran identificadores de autor como el colegio (Integrado Irra) y el nombre del docente que lo desarrolló (Omar Acosta Henao)
