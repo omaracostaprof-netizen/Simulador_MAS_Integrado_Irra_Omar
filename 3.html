@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Movimiento Armónico Simple — Profesor: Omar Acosta Henao — Grado: Décimo — Instituto Integrado Irra</title>
+<link rel="icon" href="escudo.jpeg">
+<style>
+  :root{--bg:#f7fafc;--fg:#0f172a;--ui:#16a34a;--bd:#cbd5e1;--muted:#475569}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Segoe UI,Roboto,Arial;position:relative}
+  body::before{
+    content:""; position:fixed; inset:0; background:url('escudo.jpeg') center/contain no-repeat; opacity:.10; pointer-events:none; z-index:0;
+  }
+  header, .wrap{position:relative; z-index:1}
+  header{display:flex; align-items:center; gap:10px; justify-content:center; background:var(--ui);color:#fff;padding:12px 16px; line-height:1.3}
+  header img{height:34px; width:auto; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2));}
+  header .title{font-weight:800; font-size:18px; text-align:center}
+  header .sub{font-weight:500; font-size:13px; opacity:.95}
+  .wrap{max-width:1280px;margin:0 auto;padding:14px}
+  .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+  @media (max-width: 1080px){.layout{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--bd);border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+  .card h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--bd);font-size:16px;background:#f0fdf4}
+  .body{padding:10px 12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row > *{flex:1}
+  .row .tight{flex:0 0 auto}
+  label{font-size:14px;color:var(--muted);display:block}
+  input[type=range]{width:100%}
+  button{appearance:none;border:1px solid #0f172a;background:var(--ui);color:white;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+  button.secondary{background:#fff;color:var(--ui)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chip{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:6px 8px;font-variant-numeric:tabular-nums}
+  canvas{width:100%;height:220px;border:1px solid var(--bd);border-radius:8px;background:#fff}
+  .panel2{display:grid;grid-template-columns:1fr;gap:10px}
+  .hint{font-size:12px;color:#334155;margin-top:6px}
+  .small{font-size:12px;color:#64748b}
+  .sidebar{display:grid;gap:10px}
+  .tabs{display:flex; gap:6px; border-bottom:1px solid var(--bd); padding:6px 8px; background:#ecfdf5; border-radius:10px 10px 0 0}
+  .tab{appearance:none; border:1px solid #059669; background:#10b981; color:white; padding:8px 10px; border-radius:8px 8px 0 0; font-weight:600; cursor:pointer}
+  .tab[aria-selected="true"]{background:#065f46}
+  .tabpanel{display:none; border:1px solid var(--bd); border-top:none; border-radius:0 0 10px 10px; padding:12px; background:white}
+  .tabpanel.active{display:block}
+  .seq li{margin-bottom:8px}
+  .pill{background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:2px 8px;font-size:12px;color:#3730a3}
+  .legend{font-size:12px;color:#334155}
+</style>
+</head>
+<body>
+<header>
+  <img src="escudo.jpeg" alt="Escudo">
+  <div>
+    <div class="title">Movimiento Armónico Simple — Profesor: Omar Acosta Henao — Grado: Décimo — Instituto Integrado Irra</div>
+    <div class="sub">“Ciencia y Sabiduría — Instituto Integrado Irra (1994)”</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <!-- Escena -->
+    <div class="card">
+      <h3>Escena</h3>
+      <div class="body">
+        <svg id="scene" viewBox="0 0 1600 360" style="width:100%;height:auto;border:1px solid #cbd5e1;border-radius:10px;background:white">
+          <rect x="40" y="120" width="24" height="140" fill="#1f2937"/>
+          <rect x="64" y="180" width="1500" height="4" fill="#334155" opacity="0.8"/>
+          <polyline id="spring" fill="none" stroke="#16a34a" stroke-width="3" points=""/>
+          <rect id="block" x="300" y="156" width="56" height="56" fill="#ef4444" stroke="#0f172a" stroke-width="2" rx="6" ry="6"/>
+          <line id="eq" x1="0" y1="170" x2="0" y2="190" stroke="#10b981" stroke-width="3" />
+        </svg>
+        <div class="chips">
+          <div class="chip" id="rPos">x = 0.00 m</div>
+          <div class="chip" id="rVel">v = 0.00 m/s</div>
+          <div class="chip" id="rAcc">a = 0.00 m/s²</div>
+          <div class="chip" id="rW">ω ≈ 0.00 rad/s</div>
+          <div class="chip" id="rT">T ≈ 0.00 s</div>
+          <div class="chip" id="rE">E = 0.00 J</div>
+        </div>
+        <div class="hint">x limitado a |x| ≤ 5 m. Arrastra la masa o usa los botones. 1 m = 120 px.</div>
+        <div class="small">Profesor: <b>Omar Acosta Henao</b> — Grado: <b>Décimo</b> — <b>Instituto Integrado Irra</b></div>
+      </div>
+    </div>
+
+    <!-- Panel derecho con controles y tabs -->
+    <div class="card">
+      <h3>Controles, Ecuaciones y Secuencias (4 sesiones)</h3>
+      <div class="body sidebar">
+        <!-- Controles -->
+        <div class="row">
+          <div>
+            <label>Masa m (kg): <output id="mOut">1.0</output></label>
+            <input id="m" type="range" min="0.5" max="3" step="0.1" value="1.0"/>
+          </div>
+          <div>
+            <label>Constante k (N/m): <output id="kOut">40</output></label>
+            <input id="k" type="range" min="10" max="120" step="2" value="40"/>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Amortiguamiento b (N·s/m): <output id="bOut">0.05</output></label>
+            <input id="b" type="range" min="0" max="30" step="0.01" value="0.05"/>
+          </div>
+          <div>
+            <label>Δt sim (ms): <output id="dtOut">16</output></label>
+            <input id="dt" type="range" min="5" max="30" step="1" value="16"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="tight"><button id="play">Iniciar</button></div>
+          <div class="tight"><button id="pause" class="secondary">Pausar</button></div>
+          <div class="tight"><button id="reset" class="secondary">Reiniciar</button></div>
+          <div class="tight"><button id="noro" class="secondary">Sin rozamiento</button></div>
+        </div>
+        <div class="row">
+          <div class="tight"><button id="btnSub">Débilmente amortiguado</button></div>
+          <div class="tight"><button id="btnCrit">Críticamente amortiguado</button></div>
+          <div class="tight"><button id="btnSobre">Sobreamortiguado</button></div>
+        </div>
+
+        <!-- Ecuaciones -->
+        <div class="card" style="border:1px dashed #a7f3d0">
+          <h3 style="background:#ecfdf5">Ecuaciones del MAS</h3>
+          <div class="body" style="font-family:'Cambria Math','STIX Two Math','Times New Roman',serif; line-height:1.5">
+            m·x&#x0308;&#x0307; + b·x&#x0307; + k·x = 0<br/>
+            ω = √(k/m), &nbsp; T = 2π / ω, &nbsp; x(t) = A·cos(ωt + φ) (si b=0)<br/>
+            E<sub>p</sub> = ½·k·x²,&nbsp; E<sub>k</sub> = ½·m·v²<br/>
+            Crítico: b = 2√(k·m) &nbsp; / &nbsp; Subcrítico: b &lt; 2√(k·m) &nbsp; / &nbsp; Sobrec.: b &gt; 2√(k·m)
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Secuencias didácticas">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="tab1" id="t1">Sesión 1</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab2" id="t2">Sesión 2</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab3" id="t3">Sesión 3</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="tab4" id="t4">Sesión 4</button>
+        </div>
+
+        <section id="tab1" class="tabpanel active" role="tabpanel" aria-labelledby="t1">
+          <div class="legend"><span class="pill">45 min</span> — Registro en cuaderno</div>
+          <ol class="seq">
+            <li><b>Inicia</b> la simulación y observa el movimiento.</li>
+            <li>Identifica la <b>posición de equilibrio</b> (línea verde) y dibújala en el cuaderno.</li>
+            <li>Arrastra la masa a distintas posiciones. Describe en el cuaderno lo que ocurre.</li>
+            <li>Responde: ¿qué ocurre con la velocidad al pasar por el equilibrio?</li>
+            <li>Formula una <b>hipótesis</b> fuerza–desplazamiento y justifícala.</li>
+          </ol>
+        </section>
+
+        <section id="tab2" class="tabpanel" role="tabpanel" aria-labelledby="t2">
+          <div class="legend"><span class="pill">45 min</span> — Gráficas en cuaderno</div>
+          <ol class="seq">
+            <li>Pulsa <b>Sin rozamiento</b> para ver MAS ideal.</li>
+            <li>Con la <b>línea vertical</b>, toma tres lecturas simultáneas de x, v y a. Regístralas (t, x, v, a).</li>
+            <li>Mide el <b>período experimental</b> con picos de x(t) y anótalo.</li>
+            <li>Calcula <span style="font-family:'Cambria Math','STIX Two Math'">T = 2π·√(m/k)</span> y compáralo con el experimental.</li>
+            <li>Dibuja a mano un ciclo de x(t) indicando máximos y cruces por 0.</li>
+          </ol>
+        </section>
+
+        <section id="tab3" class="tabpanel" role="tabpanel" aria-labelledby="t3">
+          <div class="legend"><span class="pill">45 min</span> — Parámetros y modelos</div>
+          <ol class="seq">
+            <li>Modifica <b>m</b> y explica el efecto en <b>T</b> (anota ejemplos numéricos).</li>
+            <li>Aumenta <b>k</b> y analiza la rapidez de la oscilación (compara dos casos).</li>
+            <li>Activa <b>Débil</b>, <b>Crítico</b>, <b>Sobre</b> (inician en x=3 m) y compara tiempos de retorno.</li>
+            <li>Relaciona con <b>mẍ+bẋ+kx=0</b> y escribe una conclusión en el cuaderno.</li>
+          </ol>
+        </section>
+
+        <section id="tab4" class="tabpanel" role="tabpanel" aria-labelledby="t4">
+          <div class="legend"><span class="pill">45 min</span> — Energía y amortiguamiento</div>
+          <ol class="seq">
+            <li>Observa <b>E<sub>p</sub></b> y <b>E<sub>k</sub></b>. Copia una captura manual de las curvas en tu cuaderno.</li>
+            <li>Sin rozamiento: verifica <b>E total ≈ constante</b> con dos lecturas en el tiempo.</li>
+            <li>Con amortiguamiento: describe la disminución de energía total (tres lecturas).</li>
+            <li>Explica en qué se transforma la energía perdida y el rol de b.</li>
+            <li>Redacta una <b>conclusión final</b> del sistema masa–resorte.</li>
+          </ol>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="card" style="grid-column:1 / span 2">
+      <h3>Gráficas</h3>
+      <div class="body panel2">
+        <canvas id="plotX"   width="1200" height="220"></canvas>
+        <canvas id="plotV"   width="1200" height="220"></canvas>
+        <canvas id="plotA"   width="1200" height="220"></canvas>
+        <canvas id="plotEn"  width="1200" height="220"></canvas>
+        <div class="small">Pasa el mouse: aparece una <b>línea vertical</b> sincronizada y una <b>lectura numérica</b> del eje vertical en cada gráfica. x(t) fijo en ±5 m; las otras escalas se ajustan en tiempo real.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ===================== Tabs ===================== */
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const panels = Array.from(document.querySelectorAll('.tabpanel'));
+  tabs.forEach(tab => {
+    tab.addEventListener('click', ()=>{
+      tabs.forEach(t => t.setAttribute('aria-selected','false'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+    });
+  });
+
+  /* ===================== Modelo físico ===================== */
+  const scene = document.getElementById('scene');
+  const spring = document.getElementById('spring');
+  const block  = document.getElementById('block');
+  const eqLine = document.getElementById('eq');
+  const rPos = document.getElementById('rPos');
+  const rVel = document.getElementById('rVel');
+  const rAcc = document.getElementById('rAcc');
+  const rW   = document.getElementById('rW');
+  const rT   = document.getElementById('rT');
+  const rE   = document.getElementById('rE');
+
+  const anchor = 76;
+  const y = 180;
+  const blockW = 56, blockH = 56;
+  const pxPerM = 120;
+  const L0 = 700;
+  const minLen = 20;
+  const rightMargin = 24;
+
+  let m=1.0, k=40, b=0.05;
+  let x=0.30, v=0.0, a=0.0;
+  let dt = 0.016;
+  let running = false;
+  const XABS_MAX = 5.0;
+
+  const $ = id => document.getElementById(id);
+  const mIn=$('m'), kIn=$('k'), bIn=$('b'), dtIn=$('dt');
+  const mOut=$('mOut'), kOut=$('kOut'), bOut=$('bOut'), dtOut=$('dtOut');
+  $('play').onclick  = ()=> running = true;
+  $('pause').onclick = ()=> running = false;
+  $('reset').onclick = ()=> { x=0.30; v=0; a=0; clearAllPlots(); };
+  $('noro').onclick  = ()=> { b=0; bIn.value=0; bOut.textContent='0.00'; };
+
+  function twoSqrtKm(){ return 2*Math.sqrt(k*m); }
+  $('btnSub').onclick   = ()=> { b = 0.3*twoSqrtKm(); bIn.value=b; bOut.textContent=b.toFixed(2); x=3; v=0; running=true; };
+  $('btnCrit').onclick  = ()=> { b = twoSqrtKm();     bIn.value=b; bOut.textContent=b.toFixed(2); x=3; v=0; running=true; };
+  $('btnSobre').onclick = ()=> { b = 1.8*twoSqrtKm(); bIn.value=b; bOut.textContent=b.toFixed(2); x=3; v=0; running=true; };
+
+  mIn.oninput  = ()=>{ m=parseFloat(mIn.value); mOut.textContent=m.toFixed(1); updateScales(true); };
+  kIn.oninput  = ()=>{ k=parseFloat(kIn.value); kOut.textContent=k.toFixed(0); updateScales(true); };
+  bIn.oninput  = ()=>{ b=parseFloat(bIn.value); bOut.textContent=b.toFixed(2); };
+  dtIn.oninput = ()=>{ dt=parseFloat(dtIn.value)/1000; dtOut.textContent=(+dtIn.value).toFixed(0); };
+
+  // Arrastre del bloque
+  let dragging=false;
+  scene.addEventListener('pointerdown', (e)=>{
+    const pt = scene.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const ctm = scene.getScreenCTM().inverse(); const loc = pt.matrixTransform(ctm);
+    const bx = anchor + (L0 + x*pxPerM);
+    if(Math.abs(loc.x - bx) < blockW) dragging=true;
+  });
+  window.addEventListener('pointerup', ()=> dragging=false);
+  scene.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const pt = scene.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY;
+    const ctm = scene.getScreenCTM().inverse(); const loc = pt.matrixTransform(ctm);
+    let L = loc.x - anchor;
+    const maxLen = (1600 - rightMargin) - anchor - blockW/2;
+    L = Math.max(minLen + blockW/2, Math.min(maxLen, L));
+    let newX = (L - L0)/pxPerM;
+    newX = Math.max(-XABS_MAX, Math.min(XABS_MAX, newX));
+    const L2 = L0 + newX*pxPerM;
+    const Lclamped = Math.max(minLen + blockW/2, Math.min(maxLen, L2));
+    x = (Lclamped - L0)/pxPerM;
+    v = 0;
+  });
+
+  /* ===================== Gráficas + cursor con lectura ===================== */
+  const Cx  = document.getElementById('plotX');  const plotX  = Cx.getContext('2d');
+  const Cv  = document.getElementById('plotV');  const plotV  = Cv.getContext('2d');
+  const Ca  = document.getElementById('plotA');  const plotA  = Ca.getContext('2d');
+  const Cen = document.getElementById('plotEn'); const plotEn = Cen.getContext('2d');
+
+  let R = { xMin:-5, xMax:5, vMin:-10, vMax:10, aMin:-20, aMax:20, eMin:0, eMax:50 };
+  let cursorActive = true;
+  let cursorFrac = 0.5;
+  const leftPad = 56, rightPad = 10, topPad = 12, bottomPad = 26;
+
+  function cursorX(canvas){
+    const Wc = canvas.width;
+    const innerW = Wc - leftPad - rightPad;
+    return leftPad + innerW*cursorFrac;
+  }
+  function attachCursorHandlers(canvas){
+    canvas.addEventListener('mousemove', (ev)=>{
+      const rect = canvas.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const innerW = canvas.width - leftPad - rightPad;
+      let frac = (x - leftPad)/innerW;
+      frac = Math.max(0, Math.min(1, frac));
+      cursorFrac = frac;
+      cursorActive = true;
+    });
+  }
+  [Cx, Cv, Ca, Cen].forEach(attachCursorHandlers);
+
+  function updateScales(reset=false){
+    const omega = Math.sqrt(k/m);
+    const vTheo = XABS_MAX * omega;
+    const aTheo = XABS_MAX * (k/m);
+    if(reset){
+      R.vMin = -vTheo; R.vMax = vTheo;
+      R.aMin = -aTheo; R.aMax = aTheo;
+      R.eMin = 0; R.eMax = 0.5*k*XABS_MAX*XABS_MAX * 1.2;
+      clearAllPlots();
+    }else{
+      const pad = 1.1;
+      if(Math.abs(v) > Math.max(Math.abs(R.vMin), Math.abs(R.vMax))){
+        const vmax = Math.abs(v)*pad; R.vMin = -vmax; R.vMax = vmax;
+      }
+      if(Math.abs(a) > Math.max(Math.abs(R.aMin), Math.abs(R.aMax))){
+        const amax = Math.abs(a)*pad; R.aMin = -amax; R.aMax = amax;
+      }
+      const Ep = 0.5*k*x*x, Ek = 0.5*m*v*v, E = Ep+Ek;
+      if(E > R.eMax){ R.eMax = E*pad; }
+    }
+  }
+
+  function grid(ctx, xMaxSecs, yMin, yMax, yUnits, xTicks=10, yTicks=6, yLabelFmt=(v)=>v.toFixed(2)){
+    const Wc = ctx.canvas.width, Hc = ctx.canvas.height;
+    ctx.clearRect(0,0,Wc,Hc);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,Wc,Hc);
+    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+    ctx.fillStyle = '#64748b'; ctx.font = '12px Arial';
+    const left = leftPad, right = rightPad, top = topPad, bottom = bottomPad;
+    const innerW = Wc - left - right, innerH = Hc - top - bottom;
+    for(let i=0;i<=xTicks;i++){
+      const x = left + innerW*(i/xTicks);
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, top+innerH); ctx.stroke();
+      const t = (xMaxSecs*i/xTicks).toFixed(1);
+      ctx.fillText(t, x-6, top+innerH+16);
+    }
+    for(let j=0;j<=yTicks;j++){
+      const y = top + innerH*(j/yTicks);
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left+innerW, y); ctx.stroke();
+      const val = yMax - (yMax-yMin)*(j/yTicks);
+      ctx.fillText(yLabelFmt(val), 8, y+4);
+    }
+    ctx.fillText("t (s)", left+innerW-20, top+innerH+22);
+    ctx.save();
+    ctx.translate(16, top + innerH/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign = "center";
+    ctx.fillText(yUnits, 0, 0);
+    ctx.restore();
+  }
+
+  // Buffers
+  let bufX=[], bufV=[], bufA=[], bufEp=[], bufEk=[], tBuf=[];
+  const MAX_SAMPLES = 1200;
+  let tAcc = 0;
+
+  function clearAllPlots(){
+    bufX=[]; bufV=[]; bufA=[]; bufEp=[]; bufEk=[]; tBuf=[]; tAcc=0;
+    grid(plotX, 10, R.xMin, R.xMax, "x (m)");
+    grid(plotV, 10, R.vMin, R.vMax, "v (m/s)");
+    grid(plotA, 10, R.aMin, R.aMax, "a (m/s²)");
+    grid(plotEn,10, R.eMin, R.eMax, "E (J)");
+  }
+
+  function drawSeriesWithCursor(ctx, xMaxSecs, yMin, yMax, units, tArray, series){
+    const Wc = ctx.canvas.width, Hc = ctx.canvas.height;
+    const left = leftPad, right = rightPad, top = topPad, bottom = bottomPad;
+    const innerW = Wc - left - right, innerH = Hc - top - bottom;
+    const x0 = (tArray.length>0) ? tArray[0] : 0;
+    const x1 = x0 + xMaxSecs;
+    function xTo(pxTime){ return left + innerW*( (pxTime - x0) / (x1 - x0) ); }
+    function yTo(val){ return top + innerH*(1 - (val - yMin)/(yMax - yMin)); }
+
+    // series
+    series.forEach(s => {
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = s.color;
+      for(let i=0;i<tArray.length;i++){
+        const px = xTo(tArray[i]);
+        const py = yTo(s.data[i]);
+        if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      }
+      ctx.stroke();
+    });
+
+    // Cursor + lectura
+    if(cursorActive && tArray.length>1){
+      const cx = cursorX(ctx.canvas);
+      // tiempo en cursor
+      const frac = (cx - left)/ (innerW||1);
+      const tCur = x0 + frac * (x1 - x0);
+      // índice más cercano
+      let idx = 0;
+      let best = 1e9;
+      for(let i=0;i<tArray.length;i++){
+        const d = Math.abs(tArray[i] - tCur);
+        if(d < best){ best = d; idx = i; }
+      }
+      // línea vertical
+      ctx.save();
+      ctx.setLineDash([6,6]);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "rgba(15, 23, 42, 0.6)";
+      ctx.beginPath();
+      ctx.moveTo(cx, top);
+      ctx.lineTo(cx, top + innerH);
+      ctx.stroke();
+      ctx.restore();
+
+      // Lectura del eje vertical (si hay 1 serie, usar esa; si hay 2, mostrar ambas)
+      ctx.save();
+      ctx.font = '12px Arial';
+      const boxX = Math.min(cx+8, left + innerW - 110);
+      let boxY = top + 8;
+      const pad = 6;
+      const lines = [];
+      if(series.length === 1){
+        lines.push(`${series[0].label}: ${series[0].data[idx].toFixed(3)} ${units}`);
+      } else {
+        series.forEach(s => lines.push(`${s.label}: ${s.data[idx].toFixed(3)} ${s.units||units}`));
+      }
+      // fondo caja
+      const w = 100, h = pad*2 + 14*lines.length;
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.fillRect(boxX, boxY, w, h);
+      ctx.strokeRect(boxX, boxY, w, h);
+      ctx.fillStyle = '#0f172a';
+      lines.forEach((ln,i)=> ctx.fillText(ln, boxX+pad, boxY+pad+12*(i+1)-2));
+      ctx.restore();
+    }
+  }
+
+  function pushAndDraw(){
+    const Ep = 0.5*k*x*x;
+    const Ek = 0.5*m*v*v;
+    const E  = Ep+Ek;
+    rE.textContent = 'E = ' + E.toFixed(2) + ' J';
+
+    tAcc += dt;
+    tBuf.push(tAcc);
+    bufX.push(x); bufV.push(v); bufA.push(a); bufEp.push(Ep); bufEk.push(Ek);
+    if(tBuf.length>MAX_SAMPLES){ tBuf.shift(); bufX.shift(); bufV.shift(); bufA.shift(); bufEp.shift(); bufEk.shift(); }
+
+    updateScales(false);
+
+    grid(plotX, 10, R.xMin, R.xMax, "x (m)");
+    grid(plotV, 10, R.vMin, R.vMax, "v (m/s)");
+    grid(plotA, 10, R.aMin, R.aMax, "a (m/s²)");
+    grid(plotEn,10, R.eMin, R.eMax, "E (J)");
+
+    drawSeriesWithCursor(plotX, 10, R.xMin, R.xMax, "m", tBuf, [ {data:bufX, color:'#16a34a', label:'x'} ]);
+    drawSeriesWithCursor(plotV, 10, R.vMin, R.vMax, "m/s", tBuf, [ {data:bufV, color:'#0ea5e9', label:'v'} ]);
+    drawSeriesWithCursor(plotA, 10, R.aMin, R.aMax, "m/s²", tBuf, [ {data:bufA, color:'#dc2626', label:'a'} ]);
+    drawSeriesWithCursor(plotEn,10, R.eMin, R.eMax, "J", tBuf, [
+      {data:bufEp, color:'#16a34a', label:'E_p', units:'J'},
+      {data:bufEk, color:'#f59e0b', label:'E_k', units:'J'}
+    ]);
+  }
+
+  function step(){
+    a = (-(b*v) - (k*x)) / m;
+    v += a*dt;
+    x += v*dt;
+    if(x >  XABS_MAX){ x =  XABS_MAX; if(v>0) v=0; }
+    if(x < -XABS_MAX){ x = -XABS_MAX; if(v<0) v=0; }
+    const L = L0 + x*pxPerM;
+    const maxLen = (1600 - 24) - anchor - blockW/2;
+    const Lclamped = Math.max(minLen + blockW/2, Math.min(maxLen, L));
+    x = (Lclamped - L0)/pxPerM;
+  }
+
+  function drawScene(){
+    const omega = Math.sqrt(k/m);
+    const T = 2*Math.PI/omega;
+    rW.textContent = 'ω ≈ ' + omega.toFixed(2) + ' rad/s';
+    rT.textContent = 'T ≈ ' + T.toFixed(2) + ' s';
+    const L = L0 + x*pxPerM;
+    const bx = anchor + L;
+    block.setAttribute('x', (bx - blockW/2).toFixed(1));
+    block.setAttribute('y', (y - blockH/2).toFixed(1));
+    eqLine.setAttribute('x1', anchor + L0);
+    eqLine.setAttribute('x2', anchor + L0);
+    eqLine.setAttribute('y1', 170);
+    eqLine.setAttribute('y2', 190);
+    const turns = 12, amp = 16;
+    const pts = [[anchor, y]];
+    for(let i=0;i<turns;i++){
+      const t1 = anchor + L*(i+0.33)/turns;
+      const t2 = anchor + L*(i+0.66)/turns;
+      const t3 = anchor + L*(i+1.00)/turns;
+      pts.push([t1, y-amp], [t2, y], [t3, y+amp]);
+    }
+    pts.push([anchor+L, y]);
+    spring.setAttribute('points', pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '));
+    rPos.textContent = 'x = ' + x.toFixed(2) + ' m';
+    rVel.textContent = 'v = ' + v.toFixed(2) + ' m/s';
+    rAcc.textContent = 'a = ' + a.toFixed(2) + ' m/s²';
+  }
+
+  function loop(){
+    requestAnimationFrame(loop);
+    if(running){ step(); pushAndDraw(); } else {
+      // Redibuja para ver el cursor y lecturas cuando está en pausa
+      grid(plotX, 10, R.xMin, R.xMax, "x (m)");
+      grid(plotV, 10, R.vMin, R.vMax, "v (m/s)");
+      grid(plotA, 10, R.aMin, R.aMax, "a (m/s²)");
+      grid(plotEn,10, R.eMin, R.eMax, "E (J)");
+      drawSeriesWithCursor(plotX, 10, R.xMin, R.xMax, "m", tBuf, [ {data:bufX, color:'#16a34a', label:'x'} ]);
+      drawSeriesWithCursor(plotV, 10, R.vMin, R.vMax, "m/s", tBuf, [ {data:bufV, color:'#0ea5e9', label:'v'} ]);
+      drawSeriesWithCursor(plotA, 10, R.aMin, R.aMax, "m/s²", tBuf, [ {data:bufA, color:'#dc2626', label:'a'} ]);
+      drawSeriesWithCursor(plotEn,10, R.eMin, R.eMax, "J", tBuf, [
+        {data:bufEp, color:'#16a34a', label:'E_p', units:'J'},
+        {data:bufEk, color:'#f59e0b', label:'E_k', units:'J'}
+      ]);
+    }
+    drawScene();
+  }
+  updateScales(true);
+  loop();
+
+  /* ===================== (Opcional) API SCORM 1.2 ===================== */
+  function findAPI(win){ let n=0; while((win.API==null) && (win.parent!=null) && (win.parent!=win)){ n++; if(n>500) return null; win = win.parent; } return win.API || null; }
+  let API = null;
+  function scormInit(){ API = findAPI(window); try{ if(API) API.LMSInitialize(""); }catch(e){} }
+  function scormSet(e,v){ try{ if(API) API.LMSSetValue(e,v); }catch(e){} }
+  function scormCommit(){ try{ if(API) API.LMSCommit(""); }catch(e){} }
+  function scormFinish(){ try{ if(API) API.LMSFinish(""); }catch(e){} }
+
+  window.addEventListener('load', ()=>{
+    scormInit();
+    scormSet("cmi.core.lesson_status","incomplete");
+    scormCommit();
+  });
+  // Sugerencia: marcar completado si el alumno visita las 4 pestañas y hace 1 medición de período
+  let visited = new Set(['tab1']);
+  panels.forEach(p => {
+    const obs = new MutationObserver(()=>{
+      if(p.classList.contains('active')) visited.add(p.id);
+      if(visited.size>=4){ scormSet("cmi.core.lesson_status","completed"); scormCommit(); }
+    });
+    obs.observe(p, {attributes:true, attributeFilter:['class']});
+  });
+
+  window.addEventListener('beforeunload', ()=>{ scormCommit(); scormFinish(); });
+})();
+</script>
+</body>
+</html>
